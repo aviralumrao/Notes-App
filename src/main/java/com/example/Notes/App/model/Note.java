@@ -27,4 +27,6 @@ public class Note {
 
     @NotBlank(message = "Content cannot be empty")
     private String content;
+
+    private String imageKey;
 }

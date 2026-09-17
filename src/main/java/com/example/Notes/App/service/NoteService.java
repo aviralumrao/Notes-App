@@ -35,6 +35,7 @@ public class NoteService {
                 .map(note -> {
                     note.setTitle(updatedNote.getTitle());
                     note.setContent(updatedNote.getContent());
+                    note.setImageKey(updatedNote.getImageKey());
                     return noteRepository.save(note);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found with id: " + id));
