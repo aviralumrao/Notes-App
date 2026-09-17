@@ -2,6 +2,7 @@ package com.example.Notes.App.controller;
 
 import com.example.Notes.App.model.Note;
 import com.example.Notes.App.repository.NoteRepository;
+import jakarta.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.HttpStatus;
@@ -32,7 +33,7 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestBody Note note) {
+    public ResponseEntity<Note> createNote(@Valid @RequestBody Note note) {
         Note savedNote = noteRepository.save(note);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedNote);
     }
