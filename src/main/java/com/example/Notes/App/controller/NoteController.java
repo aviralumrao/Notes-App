@@ -3,6 +3,7 @@ package com.example.Notes.App.controller;
 import com.example.Notes.App.model.Note;
 import com.example.Notes.App.repository.NoteRepository;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,19 +32,19 @@ public class NoteController {
     }
 
     @PostMapping
-    public ResponseEntity<Note> createNote(@RequestBody Note note){
+    public ResponseEntity<Note> createNote(@RequestBody Note note) {
         Note savedNote = noteRepository.save(note);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedNote);
     }
 
     @GetMapping("/{id}")
-    public Note getNoteById(@PathVariable Long id){
+    public Note getNoteById(@PathVariable UUID id) {
         return noteRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found with id: " + id));
     }
 
     @PutMapping("/{id}")
-    public Note updateNote(@PathVariable Long id,@RequestBody Note updatedNote){
+    public Note updateNote(@PathVariable UUID id, @RequestBody Note updatedNote) {
         return noteRepository.findById(id)
                 .map(note -> {
                     note.setTitle(updatedNote.getTitle());
@@ -54,8 +55,8 @@ public class NoteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteNote(@PathVariable Long id){
-        if (!noteRepository.existsById(id)){
+    public ResponseEntity<Void> deleteNote(@PathVariable UUID id) {
+        if (!noteRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found with id: " + id);
         }
         noteRepository.deleteById(id);
