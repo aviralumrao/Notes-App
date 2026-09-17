@@ -29,7 +29,7 @@ jobs:
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
           source: "target/Notes-App-0.0.1-SNAPSHOT.jar"
-          target: "/home/ubuntu/Notes-App/target/"
+          target: "/home/ubuntu/Notes-App/"
 
       - name: Restart application
         uses: appleboy/ssh-action@v1
