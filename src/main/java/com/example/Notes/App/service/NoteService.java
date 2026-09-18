@@ -77,6 +77,17 @@ public class NoteService {
             return null;
         }
 
+        if (file.getSize() > 1024 * 1024) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File size too large");
+        }
+
+        String contentType = file.getContentType();
+        if (contentType == null || !(contentType.equals("image/png")
+                || contentType.equals("image/jpeg")
+                || contentType.equals("image/svg+xml"))) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only PNG, JPEG, and SVG images are allowed");
+        }
+
         String originalFilename = file.getOriginalFilename();
         String extension = "";
         if (originalFilename != null && originalFilename.contains(".")) {
