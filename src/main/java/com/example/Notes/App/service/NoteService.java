@@ -13,6 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Service
 public class NoteService {
@@ -60,10 +62,14 @@ public class NoteService {
     }
 
     public void deleteNote(UUID id) {
-        if (!noteRepository.existsById(id)) {
+        var optionalNote = noteRepository.findById(id);
+        if (optionalNote.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found with id: " + id);
         }
-        noteRepository.deleteById(id);
+
+        Note note = optionalNote.get();
+        deleteImageFromS3(note.getImageKey());
+        noteRepository.delete(note);
     }
 
     private String uploadImage(MultipartFile file) {
@@ -90,6 +96,23 @@ public class NoteService {
             return imageKey;
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to upload image to S3", e);
+        }
+    }
+
+    private void deleteImageFromS3(String imageKey) {
+        if (imageKey == null || imageKey.isBlank()) {
+            return;
+        }
+
+        try {
+            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                    .bucket(bucketName)
+                    .key(imageKey)
+                    .build();
+
+            s3Client.deleteObject(deleteRequest);
+        } catch (S3Exception e) {
+            System.err.println("Failed to delete");
         }
     }
 }
