@@ -6,7 +6,7 @@ A Spring Boot RESTful API for managing notes with AWS S3 image upload support an
 
 ## Base URL
 ```
-http://localhost:8080/api/notes
+https://aviralnotes.duckdns.org/api/notes
 ```
 
 ---
@@ -40,11 +40,6 @@ http://localhost:8080/api/notes
     }
   ]
   ```
-- **cURL Example:**
-  ```bash
-  curl -X GET http://localhost:8080/api/notes
-  ```
-
 
 
 ## Validation & Constraints Summary
