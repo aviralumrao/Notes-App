@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,9 +44,9 @@ public class NoteController {
         return noteService.getNoteById(id);
     }
 
-    @PutMapping("/{id}")
-    public Note updateNote(@PathVariable UUID id, @Valid @RequestBody Note updatedNote) {
-        return noteService.updateNote(id, updatedNote);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public Note updateNote(@PathVariable UUID id, @Valid @ModelAttribute NoteRequest request) {
+        return noteService.updateNote(id, request.getTitle(), request.getContent(), request.getImage());
     }
 
     @DeleteMapping("/{id}")

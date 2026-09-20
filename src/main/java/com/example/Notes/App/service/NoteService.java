@@ -50,12 +50,15 @@ public class NoteService {
         return noteRepository.save(note);
     }
 
-    public Note updateNote(UUID id, Note updatedNote) {
+    public Note updateNote(UUID id, String title, String content, MultipartFile newImage) {
         return noteRepository.findById(id)
                 .map(note -> {
-                    note.setTitle(updatedNote.getTitle());
-                    note.setContent(updatedNote.getContent());
-                    note.setImageKey(updatedNote.getImageKey());
+                    note.setTitle(title);
+                    note.setContent(content);
+                    if (newImage != null && !newImage.isEmpty()) {
+                        deleteImageFromS3(note.getImageKey());
+                        note.setImageKey(uploadImage(newImage));
+                    }
                     return noteRepository.save(note);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Note not found with id: " + id));
